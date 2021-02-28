@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+
+  pgsql:
+    image: postgres:13.2-alpine
+    expose: 
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: devenv
+      POSTGRES_DB: loginsrv_dev
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  liquibase:
+    #image: liquibase/liquibase:4.2.2
+    build: 
+      context: ./db
+      dockerfile: Dockerfile.liquibase
+    depends_on: [ 'pgsql' ]
+    volumes:
+      - ./db:/liquibase/changelog
+    environment:
+      DB_URL: "jdbc:postgresql://pgsql:5432/loginsrv_dev"
+      DB_USERNAME: postgres
+      DB_PASSWORD: devenv
+
+    command: --driver=org.postgresql.Driver --url="jdbc:postgresql://pgsql:5432/loginsrv_dev" --username="postgres" --password="devenv" --changeLogFile="changelog.xml" update 
+    
+volumes:
+  db-data:

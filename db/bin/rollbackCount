@@ -1,0 +1,2 @@
+#!/bin/bash
+/liquibase/liquibase --driver=org.postgresql.Driver --url="$DB_URL" --username="$DB_USERNAME" --password="$DB_PASSWORD" --changeLogFile="changelog/changelog.xml" rollbackCount $1
