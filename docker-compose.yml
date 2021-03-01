@@ -13,8 +13,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  liquibase:
-    #image: liquibase/liquibase:4.2.2
+  db:
     build: 
       context: ./db
       dockerfile: Dockerfile.liquibase
@@ -22,11 +21,25 @@ services:
     volumes:
       - ./db:/liquibase/changelog
     environment:
-      DB_URL: "jdbc:postgresql://pgsql:5432/loginsrv_dev"
       DB_USERNAME: postgres
       DB_PASSWORD: devenv
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_NAME: loginsrv_dev
+    command: update 
 
-    command: --driver=org.postgresql.Driver --url="jdbc:postgresql://pgsql:5432/loginsrv_dev" --username="postgres" --password="devenv" --changeLogFile="changelog.xml" update 
-    
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      PGHOST: pgsql
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: devenv
+      PGDATABASE: loginsrv_dev
+    volumes:
+      - ./backend:/loginsrv/backend 
+
 volumes:
   db-data:

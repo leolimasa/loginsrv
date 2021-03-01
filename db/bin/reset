@@ -1,3 +1,11 @@
 #!/bin/bash
+export PGUSER=$DB_USERNAME
+export PGHOST=$DB_HOST
+export PGPORT=$DB_PORT
+export PGPASSWORD=$DB_PASSWORD
 DB_URL="jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME"
+
+psql -c "drop database if exists $DB_NAME"
+psql -c "create database $DB_NAME"
+
 /liquibase/liquibase --driver=org.postgresql.Driver --url="$DB_URL" --username="$DB_USERNAME" --password="$DB_PASSWORD" --changeLogFile="changelog/changelog.xml" update

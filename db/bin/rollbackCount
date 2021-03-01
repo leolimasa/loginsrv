@@ -1,2 +1,3 @@
 #!/bin/bash
+DB_URL="jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME"
 /liquibase/liquibase --driver=org.postgresql.Driver --url="$DB_URL" --username="$DB_USERNAME" --password="$DB_PASSWORD" --changeLogFile="changelog/changelog.xml" rollbackCount $1
